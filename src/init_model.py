@@ -26,7 +26,7 @@ import functools as ft
 import netCDF4 as nc
 import matplotlib.pyplot as plt
 
-def read_in(file_name = "ECMWF_2000.nc"):
+def read_in(file_name = "../input/ECMWF_2000.nc"):
     """
     Function 1: read data as input
     Read reanalysis data to initialize V field
@@ -142,7 +142,7 @@ def initial_vars(time_step, sigma = 0.20, mu = 38, level = 80, TTL = 25):
     """
     #troposphere_top_lev
 
-    normal_dis = lambda x : (1 / sigma * np.sqrt(2 * np.pi)) * \
+    normal_dis = lambda x : (1 / (sigma * np.sqrt(2 * np.pi))) * \
             np.exp(-1 * (x - mu)**2 / 2 * sigma**2)
     c_0 = normal_dis(np.linspace(0, 79, 80))
     c = np.zeros([time_step, level])
