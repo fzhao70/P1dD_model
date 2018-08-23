@@ -19,43 +19,7 @@ import time
 #import user fuction
 import init_model
 import core_model
-
-    
-def graph_output(data, time_step, fig_type = "contour"):
-    """
-    This function is mean to initialize vars and give them IC
-
-    Args:
-    ---------------
-    data : data for plot ,2-d Only
-
-    Return:
-    ---------------
-    Nan
-
-    """
-
-    assert(data.shape),"NO DATA"
-    if fig_type == "contour":
-        plt.style.context('Solarize_Light2')
-        plt.contourf(data)
-        plt.xlabel('Time')
-        plt.ylabel('level')
-        plt.colorbar()
-        plt.xlim((0,time_step))
-        plt.ylim((20,79))
-        #plt.yticks(np.linspace(0,80,80),np.linspace(0,40000,80).astype(int))
-        plt.title('Time Series of Atlitude')
-        plt.show()
-    if fig_type == "pixel":
-        plt.imshow(data ,interpolation='nearest')
-        plt.gca().invert_yaxis()
-        plt.title('Time Series of Atlitude')
-        plt.xlim((0,time_step))
-        plt.ylim((20,79))
-        plt.show()
-
-    return 0
+import graph_model
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Main Procedure Start
@@ -102,4 +66,4 @@ if __name__ == '__main__':
     # Output part
     #------------------
     c_out = np.transpose(c_out)
-    graph_output(c_out, time_step)
+    graph_model.graph_output(c_out, time_step)
