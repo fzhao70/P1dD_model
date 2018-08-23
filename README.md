@@ -4,8 +4,9 @@
 
 This is a small 1-d model to understand the profile pattern about Huge Pinatubo Eruption(1991).
 Only design for tropical stripe.
-
+Crank-Nicolson method included.
 Write By Python
+
 Version:
   + Python > 3.5
   + pynetCDF4
