@@ -18,7 +18,7 @@ import numpy as np
 import random as rand 
 
 def pde_solver(time_step, level, c, v, w, TTL = 25, \
-                Dilution_type = 'Force', H_Dissipate = False, V_Sedimentation = False, V_Transportation = False, Diffusion_Coef = "Huang"):
+                Dilution_type = 'Force', H_Dissipate = False, V_Sedimentation = 'Concentration', V_Transportation = False, Diffusion_Coef = "Huang"):
     """
     This is a pde_solver for solving diffusion equation
 
@@ -51,13 +51,9 @@ def pde_solver(time_step, level, c, v, w, TTL = 25, \
     exceed_flag = 0
 
     modal_number = 3
-    delta_z = 1 #units : meter
-    delta_t = 1   #units : month
+    delta_z = 1 #units : level
+    delta_t = 1 #units : month
     delta_y = 1
-
-    #w = w * 86400
-    v = v * 0.5
-    w = w * 10
 
     #Concentration in Reservoir
     c_exchange = np.zeros((modal_number, time_step, level))
@@ -69,7 +65,7 @@ def pde_solver(time_step, level, c, v, w, TTL = 25, \
         #n : power of the formula
         #D_zz = b * (level * 500)**n
         b = 1e-1
-        n = 0.5
+        n = 0.4
         D_zz_generator = lambda z : b * (z**n)
         level_height = np.linspace(0,80,80)
         D_zz = D_zz_generator(level_height)
@@ -78,7 +74,7 @@ def pde_solver(time_step, level, c, v, w, TTL = 25, \
 
     if Diffusion_Coef == "Constant":
         print("Constant")
-        D_zz = np.full((modal_number, level), 6)
+        D_zz = np.full((modal_number, level), 1e-1)
 
     #Concatenate to expand wind into many years
     for i in range(int(time_step / 12)):
@@ -90,20 +86,20 @@ def pde_solver(time_step, level, c, v, w, TTL = 25, \
     for modal in range(modal_number):
         #~~~~~~~Solve Part
         for time in range(0, time_step - 1):
-            cross_term = (w[time, i] * delta_z * delta_t)/2 
+            cross_term = lambda x : (w[time, x] * delta_z * delta_t)/2 
         # Init A ------>  time + 1
-            A =     np.diagflat([-1 * D_zz[modal, i] * delta_t - cross_term for i in range(level - 1)], -1)
-            A = A + np.diagflat([-1 * D_zz[modal, i] * delta_t + cross_term for i in range(level - 1)], 1)
-            A = A + np.diagflat([D_zz[modal, 0] * delta_t + 2 * (delta_z)**2 - cross_term] \
+            A =     np.diagflat([-1 * D_zz[modal, i] * delta_t - cross_term(i) for i in range(level - 1)], -1)
+            A = A + np.diagflat([-1 * D_zz[modal, i] * delta_t + cross_term(i) for i in range(level - 1)], 1)
+            A = A + np.diagflat([D_zz[modal, 0] * delta_t + 2 * (delta_z)**2 - cross_term(0)] \
             + [2 * D_zz[modal, i] * delta_t + 2 * (delta_z)**2 for i in range(level - 2)] \
-            + [D_zz[modal, level - 1] * delta_t + 2 * (delta_z)**2 + cross_term], 0)
+            + [D_zz[modal, level - 1] * delta_t + 2 * (delta_z)**2 + cross_term(level - 1)], 0)
 
         # Init B ------> time
-            B =     np.diagflat([D_zz[modal, i] * delta_t + cross_term for i in range(level - 1)], -1)
-            B = B + np.diagflat([D_zz[modal, i] * delta_t - cross_term for i in range(level - 1)], 1)
-            B = B + np.diagflat([-1 * D_zz[modal, 0] * delta_t + 2 * (delta_z)**2 + cross_term] \
+            B =     np.diagflat([D_zz[modal, i] * delta_t + cross_term(i) for i in range(level - 1)], -1)
+            B = B + np.diagflat([D_zz[modal, i] * delta_t - cross_term(i) for i in range(level - 1)], 1)
+            B = B + np.diagflat([-1 * D_zz[modal, 0] * delta_t + 2 * (delta_z)**2 + cross_term(0)] \
             + [-2 * D_zz[modal, i] * delta_t + 2 * (delta_z)**2 for i in range(level - 2)] \
-            + [-1 * D_zz[modal, level - 1] * delta_t + 2 * (delta_z)**2 - cross_term], 0)
+            + [-1 * D_zz[modal, level - 1] * delta_t + 2 * (delta_z)**2 - cross_term(level - 1)], 0)
 
             #U for dissipate process
             #Exchange Aerosol with a zero-initial reservoirs
@@ -137,11 +133,23 @@ def pde_solver(time_step, level, c, v, w, TTL = 25, \
                         c[modal, time + 1, i] = 0
 
             # Vertical Sedimentation
-            if V_Sedimentation == True:
+            if V_Sedimentation == 'Concentration':
                 for i in range(1, level):
-                    delta_c = np.absolute(c[modal, time + 1, i - 1] - c[modal, time + 1, i])
-                    c[modal, time + 1, i - 1] = c[modal, time + 1, i - 1] + delta_c * 0.8
-                    c[modal, time + 1, i] = c[modal, time + 1, i] - delta_c * 0.8
+                    delta_c_vertical = c[modal, time + 1, i] - c[modal, time + 1, i - 1]
+                    v_coeff = 0.6
+                    if delta_c_vertical > 0:
+                        c[modal, time + 1, i - 1] = c[modal, time + 1, i - 1] + delta_c_vertical * v_coeff
+                        c[modal, time + 1, i] = c[modal, time + 1, i] - delta_c_vertical * v_coeff
+                del i
+
+            if V_Sedimentation == 'Height':
+                for i in range(1, level):
+                    delta_c_vertical = c[modal, time + 1, i] - i
+                    v_coeff = 0.07
+                    if delta_c_vertical > 0:
+                        c[modal, time + 1, i - 1] = c[modal, time + 1, i - 1] + i * v_coeff
+                        c[modal, time + 1, i] = c[modal, time + 1, i] - i * v_coeff
+                del i
 
             # Vertical Transportation
             if V_Transportation == True:

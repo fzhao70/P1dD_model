@@ -26,7 +26,7 @@ import functools as ft
 import netCDF4 as nc
 import matplotlib.pyplot as plt
 
-def read_in(file_name = "../input/ECMWF_2000.nc"):
+def read_in(file_name = "ECMWF_2000.nc"):
     """
     Function 1: read data as input
     Read reanalysis data to initialize V field
@@ -155,5 +155,5 @@ if __name__ == '__main__':
     """
     This part is JUST FOR TEST
     """
-    read_in()
+    dum = read_in()
     print("End")

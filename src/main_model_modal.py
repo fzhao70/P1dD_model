@@ -33,25 +33,30 @@ if __name__ == '__main__':
     #--------------------
 
     #Initial Vars
-    TTL = 29
+    TTL = 30
     time_step = 50
     level = 80
     modal_number = 3
 
     #Initial Condition
-    c_0 = init_model.initial_vars(time_step, sigma = 0.2, mu = 38, level = level)
+    c_0 = init_model.initial_vars(time_step, sigma = 0.25, mu = 38, level = level)
     c_in = np.zeros((modal_number, time_step, level))
-    c_max = 1
+    c_max = 1e2
     for i in range(modal_number):
         c_in[i, :, :] = c_max * c_0 # units : mol
-    # Set stratosphere horizon wind
+    # Set stratosphere horizon vertical wind
+    # w : 1e-2 ~ 1e-7
+    # v : 1    ~ 1e-2
     v, w = init_model.read_in()
     w = np.absolute(w)
     v = np.absolute(v)
+    v = v * 0.7
+    w = w * 0.7
+    print(v[0:2, 10:70])
     v[:, 0:TTL] = 0
     v[:, 0:TTL] = 0
-    v = np.concatenate((v[8:, :], v[0:8, :]), axis = 0)
-    w = np.concatenate((w[8:, :], w[0:8, :]), axis = 0)
+    v = np.concatenate((v[6:, :], v[0:6, :]), axis = 0)
+    w = np.concatenate((w[6:, :], w[0:6, :]), axis = 0)
     
     print("Initial Part Succeed")
     time_used = time.time() - time0 
@@ -72,4 +77,4 @@ if __name__ == '__main__':
     #------------------
 
     c_out = np.transpose(c_out[:, :])
-    graph_model.graph_output(c_out, time_step)
+    graph_model.graph_output(c_out, time_step, fig_type = 'contour')
