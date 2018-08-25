@@ -1,6 +1,6 @@
 # P1dD_model
 
-## Mt. Pinatubo 1d_Diffusion_Convection Model
+## Mt. Pinatubo 1d_Diffusion_Advection Model
 
 This is a very simple 1-d model to understand the profile pattern about Huge Pinatubo Eruption(1991).
 
@@ -15,7 +15,7 @@ Version:
   + pynetCDF4
   + ECMWF ERA5
   
-To Start it, Plz use main_model.py in /src
+To Start it, Plz use main_model_modal.py in /src
 
 ## Concept Graph
 ![concept](https://github.com/zfh1997/P1dD_model/raw/master/readme/1-d_model.bmp)
