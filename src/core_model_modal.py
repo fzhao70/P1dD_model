@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-1-D model
+1-D Diffusion Advection model
 Module Name : Core
-Only Diffusion included
+
 A PDE Solver
 
-Fanghe @ gatech MoSE 3229
+Fanghe @ gatech MoSE 3230
 
 Version:
     + python => 3.5
