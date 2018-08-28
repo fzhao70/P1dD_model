@@ -122,6 +122,11 @@ def read_in(file_name = "ECMWF_2000.nc"):
     #Close file
     Reanalysis_fid.close()
 
+    w_0 = np.absolute(w_0)
+    v_0 = np.absolute(v_0)
+    v_0 = v_0 * 0.7
+    w_0 = w_0 * 0.7
+
     return v_0, w_0
 
 def initial_vars(time_step, sigma = 0.20, mu = 38, level = 80, TTL = 25):
