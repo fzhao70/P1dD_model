@@ -13,6 +13,8 @@ Write By Python
 Version:
   + Python > 3.5
   + pynetCDF4
+  + scipy
+  + matplotlib
   + ECMWF ERA5
   
 To Start it, Plz use main_model_modal.py in /src
