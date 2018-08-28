@@ -16,6 +16,8 @@ Gatech-Apollo
 import numpy as np
 import matplotlib.pyplot as plt
 import time
+import configparser
+import os
 #import user module
 import init_model
 import graph_model
@@ -31,12 +33,20 @@ if __name__ == '__main__':
     print("Initial Part start")
     time0 = time.time()
     #--------------------
+    config = configparser.ConfigParser()
+    config.read("namelist.ini")
+    #Section : model
+    TTL = int(config.get("model", "TopTroposphereLayer"))
+    time_step = int(config.get("model", "time_step"))
+    level = int(config.get("model", "level"))
+    modal_number = int(config.get("model", "modal_number"))
+    #Section : switch
+    Dilution = config.get("switch", "Dilution")
+    Sedimentation = config.get("switch", "Sedimentation")
+    Diffusion = config.get("switch" ,"Diffusion")
+    Dissipate = bool(int(config.get("switch", "Dissipate")))
+    Transport = bool(int(config.get("switch", "Transport")))
 
-    #Initial Vars
-    TTL = 30
-    time_step = 50
-    level = 80
-    modal_number = 3
 
     #Initial Condition
     c_0 = init_model.initial_vars(time_step, sigma = 0.25, mu = 38, level = level)
