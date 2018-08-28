@@ -37,10 +37,11 @@ if __name__ == '__main__':
     config = configparser.ConfigParser()
     config.read("namelist.ini")
     #Section : model
-    TTL = int(config.get("model", "TopTroposphereLayer"))
-    time_step = int(config.get("model", "time_step"))
-    level = int(config.get("model", "level"))
-    modal_number = int(config.get("model", "modal_number"))
+    TTL = int(config.get("vars", "TopTroposphereLayer"))
+    time_step = int(config.get("vars", "time_step"))
+    level = int(config.get("vars", "level"))
+    modal_number = int(config.get("vars", "modal_number"))
+    c_max = int(config.get("vars", "c_max"))
     #Section : switch
     Dilution = config.get("switch", "Dilution")
     Sedimentation = config.get("switch", "Sedimentation")
@@ -59,13 +60,8 @@ if __name__ == '__main__':
     # w : 1e-2 ~ 1e-7
     # v : 1    ~ 1e-2
     v, w = init_model.read_in()
-    w = np.absolute(w)
-    v = np.absolute(v)
-    v = v * 0.7
-    w = w * 0.7
-    print(v[0:2, 10:70])
-    v[:, 0:TTL] = 0
-    v[:, 0:TTL] = 0
+
+    #Mt Pinatubo Eruption occurs in June
     v = np.concatenate((v[6:, :], v[0:6, :]), axis = 0)
     w = np.concatenate((w[6:, :], w[0:6, :]), axis = 0)
     
