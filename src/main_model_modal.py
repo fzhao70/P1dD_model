@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-1-D model
+1-D Diffusion Advection model
+
 Module Name : Main
-Only Diffusion included
+This is entrance of the whole program
 
 Fanghe @ gatech MoSE 3229
 
@@ -65,6 +66,7 @@ if __name__ == '__main__':
     print(v[0:2, 10:70])
     v[:, 0:TTL] = 0
     v[:, 0:TTL] = 0
+    #Mt Pinatubo Eruption occurs in June
     v = np.concatenate((v[6:, :], v[0:6, :]), axis = 0)
     w = np.concatenate((w[6:, :], w[0:6, :]), axis = 0)
     
