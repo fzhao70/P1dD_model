@@ -30,7 +30,7 @@ def read_in(file_name = "ECMWF_2000.nc"):
     """
     Function 1: read data as input
     Read reanalysis data to initialize V field
-    
+
     Args:
     ---------
     file_name : a string default is "ECMWF_2001.nc"
@@ -44,7 +44,7 @@ def read_in(file_name = "ECMWF_2000.nc"):
 
     #Open File and Retrieve Data from it
     #Pay attention:
-    #1. netCDF4 can not use with...as....: to open the file 
+    #1. netCDF4 can not use with...as....: to open the file
     #2. Do not close the file before u use the variables
     #3. Retrieve you data you exactly need
     Reanalysis_fid = nc.Dataset(file_name, "r")
@@ -77,7 +77,7 @@ def read_in(file_name = "ECMWF_2000.nc"):
     w = w[:, :, lat_index, :]
     w = np.average(w, 2)
     #Longitude Average
-    #After Selection dimension will add one dummy dimension 
+    #After Selection dimension will add one dummy dimension
     z = np.average(z, 3)
     w = np.average(w, 3)
     v = np.average(v, 3)
@@ -86,7 +86,7 @@ def read_in(file_name = "ECMWF_2000.nc"):
     w = np.average(w, 2)
     z = np.average(z, 2)
     z = z / 9.8
-    
+
     #Attention w_0 is on the vertex
     #
     #  -----w_0-----    top w_0 = 0

@@ -16,7 +16,6 @@ Gatech-Apollo
 import numpy as np
 import matplotlib.pyplot as plt
 
-    
 def graph_output(data, time_step, fig_type = "contour"):
     """
     This function is mean to initialize vars and give them IC
